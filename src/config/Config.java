@@ -4,7 +4,7 @@ public final class Config {
     /* Tiempo total de simulación */
     public static final int T = 60;
 
-    /* Número de mesas (M) y de personas (P) */
+    /* Número de mesas (M) y de personas por mesa (P) */
     public static final int M = 6;
     public static final int P = 4;
 
