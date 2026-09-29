@@ -7,10 +7,12 @@ import java.util.concurrent.CyclicBarrier;
 
 public class Mesa {
     private int idMesa;
-    private CyclicBarrier barrera;
+    private CyclicBarrier barreraMenu;
+    private CyclicBarrier barreraComer;
 
     Mesa(int idMesa) {
         this.idMesa = idMesa;
-        this.barrera = new CyclicBarrier(Config.P);
+        this.barreraMenu = new CyclicBarrier(Config.P);
+        this.barreraComer = new CyclicBarrier(Config.P);
     }
 }

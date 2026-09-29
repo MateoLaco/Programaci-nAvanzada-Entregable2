@@ -1,31 +1,35 @@
 package lugares;
 
-import config.Config;
 import objetos.Pedido;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.Random;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Cocina {
-    final private ExecutorService executor;
-    int TCmin;
-    int TCmax;
+    private final BlockingQueue<Pedido> pedidosPendientes;
+    private final BlockingQueue<Pedido> pedidosListos;
     Random rand;
 
     Cocina() {
-        executor = Executors.newFixedThreadPool(Config.C);
-
+        this.pedidosPendientes = new LinkedBlockingQueue<>();
+        this.pedidosListos = new LinkedBlockingQueue<>();
         rand = new Random();
     }
 
-    public void cocinarPlato(BlockingQueue<Pedido> colaPlatos, Pedido pedido) {
-        try {
-            Thread.sleep(rand.nextInt(TCmax - TCmin) + TCmin);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public void agregarPedido(Pedido pedido) throws InterruptedException {
+        pedidosPendientes.put(pedido);
+    }
 
+    public Pedido tomarPedido() throws InterruptedException {
+        return pedidosPendientes.take();
+    }
+
+    public void agregarListo(Pedido pedido) throws InterruptedException {
+        pedidosListos.put(pedido);
+    }
+
+    public  Pedido tomarPedidoListo() throws InterruptedException {
+        return pedidosListos.take();
     }
 }
