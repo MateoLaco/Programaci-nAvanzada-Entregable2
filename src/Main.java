@@ -8,7 +8,7 @@ public class Main {
         restaurante.iniciar();
 
         try {
-            Thread.sleep(Config.TIEMPO_SIMULACION);
+            Thread.sleep(Config.TIEMPO_SIMULACION * 1000L); //Ahora la simulacion dura 60 segundos
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {

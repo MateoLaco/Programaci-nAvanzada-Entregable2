@@ -55,4 +55,10 @@ public class Local {
         }
         return cliente.getMesaAsignada();
     }
+    
+    public synchronized void liberarMesa(Mesa mesa) {
+        mesa.vaciar();
+        mesa.setEstadoMesa(EstadosMesas.LIBRE);
+        notifyAll();
+    }
 }

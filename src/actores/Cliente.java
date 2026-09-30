@@ -4,9 +4,9 @@ import lugares.Mesa;
 
 public class Cliente implements Runnable{
     private int idCliente;
-    private Mesa mesaAsignada;
+    private volatile Mesa mesaAsignada; //como mesaAsignada la escribe un hilo (el que hace el esperarMesa que arma el grupo) y la leen otros se narca como volatile
 
-    Cliente(int idCliente) {
+    public Cliente(int idCliente) { //constructor de cliente public asi Restaurante puede crear clientes
         this.idCliente = idCliente;
     }
 

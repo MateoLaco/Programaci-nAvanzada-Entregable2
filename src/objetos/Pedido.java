@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Pedido {
-    private Mesa mesa;
-    List<Plato> platos;
+    private final Mesa mesa;
+    private final List<Plato> platos;
 
-    public Pedido(Mesa mesa, ArrayList<Plato> platos) {
+    public Pedido(Mesa mesa, List<Plato> platos) {
         this.mesa = mesa;
         this.platos = platos;
     }
