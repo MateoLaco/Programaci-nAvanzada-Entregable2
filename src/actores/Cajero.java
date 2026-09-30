@@ -9,6 +9,5 @@ public class Cajero implements Runnable{
 
     @Override
     public void run(){
-        System.out.println("Nigger");
     }
 }

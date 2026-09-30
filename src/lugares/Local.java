@@ -13,7 +13,7 @@ public class Local {
     private final List<Mesa> mesas;
     private final Queue<Cliente> clientesEsperando;
 
-    Local(){
+    public Local(){
         mesas = new ArrayList<Mesa>(Config.NUMERO_DE_MESAS);
         clientesEsperando = new LinkedList<Cliente>() {
         };

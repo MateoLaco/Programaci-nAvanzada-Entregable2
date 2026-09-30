@@ -1,4 +1,6 @@
 package actores;
 
-public class Cocinero {
+public class Cocinero implements Runnable {
+    @Override
+    public void run() {}
 }

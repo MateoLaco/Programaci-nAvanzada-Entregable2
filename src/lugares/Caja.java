@@ -8,7 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Caja {
     private BlockingQueue<Cliente> colaPago;
 
-    Caja(){
+    public Caja(){
         colaPago = new LinkedBlockingQueue<>();
     }
 

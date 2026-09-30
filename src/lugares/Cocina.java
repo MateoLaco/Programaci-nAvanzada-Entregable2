@@ -11,7 +11,7 @@ public class Cocina {
     private final BlockingQueue<Pedido> pedidosListos;
     Random rand;
 
-    Cocina() {
+    public Cocina() {
         this.pedidosPendientes = new LinkedBlockingQueue<>();
         this.pedidosListos = new LinkedBlockingQueue<>();
         rand = new Random();

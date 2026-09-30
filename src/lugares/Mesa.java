@@ -17,7 +17,7 @@ public class Mesa {
     private CyclicBarrier barreraComer;
     private List<Cliente> clientes;
 
-    Mesa(int idMesa) {
+    public Mesa(int idMesa) {
         this.idMesa = idMesa;
         this.estadoMesa = EstadosMesas.LIBRE;
         this.barreraMenu = new CyclicBarrier(Config.PERSONAS_POR_MESA);
