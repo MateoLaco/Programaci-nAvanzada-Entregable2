@@ -1,5 +1,7 @@
 package objetos;
 
+import config.EstadoPlato;
+import excepciones.PlatosNoValidos;
 import lugares.Mesa;
 
 import java.util.ArrayList;
@@ -12,5 +14,15 @@ public class Pedido {
     public Pedido(Mesa mesa, List<Plato> platos) {
         this.mesa = mesa;
         this.platos = platos;
+    }
+
+    public synchronized Plato obtenerPlatoDePedido() throws PlatosNoValidos {
+        for  (Plato plato : platos) {
+            if (plato.estadoPlato == EstadoPlato.PENDIENTE){
+                plato.estadoPlato = EstadoPlato.COCINANDO;
+                return plato;
+            }
+        }
+        throw new PlatosNoValidos("Algo no funcionó en los platos");
     }
 }

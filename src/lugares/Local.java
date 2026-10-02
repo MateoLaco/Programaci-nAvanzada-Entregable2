@@ -3,22 +3,26 @@ package lugares;
 import actores.Cliente;
 import config.Config;
 import config.EstadosMesas;
+import objetos.TareaMozo;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 
 public class Local {
     private final List<Mesa> mesas;
     private final Queue<Cliente> clientesEsperando;
+    private final BlockingQueue<TareaMozo> tareasMozos;
 
-    public Local(){
-        mesas = new ArrayList<Mesa>(Config.NUMERO_DE_MESAS);
+    public Local(BlockingQueue<TareaMozo> tareasMozos){
+        this.mesas = new ArrayList<Mesa>(Config.NUMERO_DE_MESAS);
+        this.tareasMozos =  tareasMozos;;
         clientesEsperando = new LinkedList<Cliente>() {
         };
         for (int i = 0; i < Config.NUMERO_DE_MESAS; i++) {
-            Mesa mesaNueva = new Mesa(i);
+            Mesa mesaNueva = new Mesa(i, tareasMozos);
             mesas.add(mesaNueva);
         }
     }

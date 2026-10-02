@@ -1,13 +1,29 @@
 package actores;
 
-import lugares.Mesa;
+import config.Config;
+import lugares.*;
+import java.util.Random;
+import java.util.concurrent.BrokenBarrierException;
+
+import objetos.Menu;
+import objetos.Pedido;
+import objetos.Plato;
 
 public class Cliente implements Runnable{
     private int idCliente;
+    private final Local local;
+    private final Menu menu;
+    private final Caja caja;
     private volatile Mesa mesaAsignada; //como mesaAsignada la escribe un hilo (el que hace el esperarMesa que arma el grupo) y la leen otros se narca como volatile
+    private volatile Plato plato;
+    private final Random rand;
 
-    public Cliente(int idCliente) { //constructor de cliente public asi Restaurante puede crear clientes
+    public Cliente(int idCliente, Local local, Menu menu, Caja caja) { //constructor de cliente public asi Restaurante puede crear clientes
         this.idCliente = idCliente;
+        this.local = local;
+        this.menu = menu;
+        this.caja = caja;
+        this.rand = new Random();
     }
 
     public Mesa getMesaAsignada() {
@@ -16,6 +32,10 @@ public class Cliente implements Runnable{
 
     public void setMesaAsignada(Mesa mesaAsignada) {
         this.mesaAsignada = mesaAsignada;
+    }
+
+    public Plato getPlato() {
+        return plato;
     }
 
     @Override
@@ -41,5 +61,22 @@ public class Cliente implements Runnable{
            restaurante la mesa queda libre.
 
          */
+        try{
+            /* Ejecuta código de esperar a una mesa y la asigna al cliente */
+            /* Esto espera a que se llena la mesa y luego continúa el código */
+            this.mesaAsignada = local.esperarMesa(this);
+            /* Espera un tiempo aleatorio dentro del rango de tiempos de espera */
+            /* Esto simula el tiempo de espera para elegir un plato del menú */
+            Thread.sleep(rand.nextInt(Config.TIEMPO_PARA_ELEGIR_MAX - Config.TIEMPO_PARA_ELEGIR_MIN + 1) + Config.TIEMPO_PARA_ELEGIR_MIN);
+            /* Ejecuta la elección de item del menú */
+            /* Esto solo devuelve el plato que se eligió */
+            this.plato = menu.elegirPlato(rand);
+            /* Ejecuta la espera del mozo */
+            this.mesaAsignada.esperarMozo();
+        } catch (InterruptedException e){
+            System.out.println("Error al muestrar la mesa asignada");
+        } catch (BrokenBarrierException e) {
+            System.out.println("Error al elegir menu");
+        }
     }
 }
