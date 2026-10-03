@@ -1,34 +1,47 @@
 package lugares;
 
+import config.EstadoPlato;
+import config.EstadosTareaMozo;
+import excepciones.PlatoNoValido;
 import objetos.Pedido;
 import objetos.Plato;
+import objetos.TareaCocina;
+import objetos.TareaMozo;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Cocina {
-    private final BlockingQueue<Pedido> pedidosPendientes;
-    private final BlockingQueue<Pedido> pedidosListos;
+    private final BlockingQueue<TareaCocina> tareasCocina;
+    private final BlockingQueue<TareaMozo> tareasDeMozos;
 
-    public Cocina() {
-        this.pedidosPendientes = new LinkedBlockingQueue<>();
-        this.pedidosListos = new LinkedBlockingQueue<>();
+    public Cocina(BlockingQueue<TareaMozo> tareasDeMozos) {
+        this.tareasCocina = new LinkedBlockingQueue<>();
+        this.tareasDeMozos = tareasDeMozos;
     }
 
-    public void agregarPedidoPendiente(Pedido pedido) throws InterruptedException {
-        pedidosPendientes.put(pedido);
+    public synchronized void agregarPedidoPendiente(Pedido pedido) throws InterruptedException {
+        for (Plato plato : pedido.obtenerPlatosDePedido()){
+            plato.cambiarEstadoPlato(EstadoPlato.PENDIENTE);
+            tareasCocina.put(new TareaCocina(pedido, plato));
+        }
     }
 
-    public Plato tomarPlatoPendiente() throws InterruptedException {
-        this
+    public TareaCocina tomarPlatoPendiente() throws InterruptedException, PlatoNoValido {
+        TareaCocina tareaCocina = this.tareasCocina.take();
+        Plato plato = tareaCocina.getPlato();
+        if (plato.getEstadoPlato() != EstadoPlato.PENDIENTE){
+            throw new PlatoNoValido("El plato no puede estar no pendiente");
+        }
+        plato.cambiarEstadoPlato(EstadoPlato.COCINANDO);
+        return tareaCocina;
     }
 
-    public void agregarPedidoListo(Pedido pedido) throws InterruptedException {
-        pedidosListos.put(pedido);
-    }
-
-    public  Pedido tomarPedidoListo() throws InterruptedException {
-        return pedidosListos.take();
+    public void registrarPlatoPronto(TareaCocina tarea) throws InterruptedException {
+        Pedido pedido = tarea.getPedido();
+        boolean esUltimoPlato = pedido.registrarPlatoTerminado(tarea.getPlato());
+        if (esUltimoPlato) {
+            this.tareasDeMozos.put(new TareaMozo(EstadosTareaMozo.RECOGER_PLATO, pedido.getMesa(), pedido));
+        }
     }
 }

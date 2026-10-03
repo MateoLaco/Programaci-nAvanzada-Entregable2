@@ -21,10 +21,10 @@ public class Restaurante {
     private ExecutorService cajeros;
 
     public Restaurante() {
-        this.cocina = new Cocina();
+        this.tareasDeMozos = new LinkedBlockingQueue<>();
         this.caja = new Caja();
-        this.tareasDeMozos = new LinkedBlockingQueue<TareaMozo>();
         this.local = new Local(tareasDeMozos);
+        this.cocina = new Cocina(tareasDeMozos);
     }
 
     public void iniciar(){

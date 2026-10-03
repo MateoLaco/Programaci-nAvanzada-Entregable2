@@ -1,10 +1,9 @@
 package objetos;
 
 import config.EstadoPlato;
-import excepciones.PlatosNoValidos;
+import excepciones.PlatoNoValido;
 import lugares.Mesa;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Pedido {
@@ -13,16 +12,36 @@ public class Pedido {
 
     public Pedido(Mesa mesa, List<Plato> platos) {
         this.mesa = mesa;
-        this.platos = platos;
+        this.platos = List.copyOf(platos);
     }
 
-    public synchronized Plato obtenerPlatoDePedido() throws PlatosNoValidos {
-        for  (Plato plato : platos) {
-            if (plato.estadoPlato == EstadoPlato.PENDIENTE){
-                plato.estadoPlato = EstadoPlato.COCINANDO;
-                return plato;
+    /* Pedidos */
+    public List<Plato> obtenerPlatosDePedido() {
+        return this.platos;
+    }
+
+    /* Mesa */
+    public Mesa getMesa() {
+        return this.mesa;
+    }
+
+    private boolean pedidoTerminado(){
+        for (Plato plato : this.platos){
+            if (plato.getEstadoPlato() != EstadoPlato.PRONTO){
+                return false;
             }
         }
-        throw new PlatosNoValidos("Algo no funcionó en los platos");
+        return true;
+    }
+
+    public synchronized boolean registrarPlatoTerminado(Plato plato) throws PlatoNoValido {
+        if (!this.platos.contains(plato)){
+            throw new PlatoNoValido("Este plato no pertenece al pedido,");
+        }
+        if (plato.getEstadoPlato() != EstadoPlato.COCINANDO){
+            throw new PlatoNoValido("Plato no es válido");
+        }
+        plato.cambiarEstadoPlato(EstadoPlato.PRONTO);
+        return this.pedidoTerminado();
     }
 }

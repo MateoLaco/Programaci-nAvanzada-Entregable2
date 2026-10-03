@@ -1,5 +1,6 @@
 package actores;
 
+import config.EstadoPlato;
 import config.EstadosTareaMozo;
 import lugares.*;
 import objetos.Pedido;
@@ -33,13 +34,23 @@ public class Mozo implements Runnable {
                 TareaMozo tarea = tareasDeMozos.take();
 
                 if (tarea.getEstado() == EstadosTareaMozo.TOMAR_PEDIDO) {
+                    /* Simulación del tiempo de espera para tomar el pedido */
                     Thread.sleep(
                             rand.nextInt(this.TIEMPO_PARA_ANOTAR_PEDIDO_MAX -  this.TIEMPO_PARA_ANOTAR_PEDIDO_MIN + 1)
                             + this.TIEMPO_PARA_ANOTAR_PEDIDO_MIN);
+                    /* Se crea un nuevo pedido para enviar a la cocina */
                     Mesa mesa = tarea.getMesa();
                     List<Plato> platos = mesa.obtenerPlatos();
+                    for  (Plato plato : platos) {
+                        plato.cambiarEstadoPlato(EstadoPlato.CON_MOZO);
+                    }
                     Pedido nuevoPedido = new Pedido(mesa, platos);
+                    /* Se envía el pedido creado a la cocina */
                     cocina.agregarPedidoPendiente(nuevoPedido);
+                } else if (tarea.getEstado() == EstadosTareaMozo.RECOGER_PLATO) {
+
+                } else {
+
                 }
             }
         } catch (InterruptedException e) {

@@ -5,9 +5,9 @@ import config.EstadoPlato;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Plato {
-    public final String nombre;
-    public final int precio;
-    public EstadoPlato estadoPlato;
+    private final String nombre;
+    private final int precio;
+    private EstadoPlato estadoPlato;
     private final int TIEMPO_DE_COCCION_MIN;
     private final int TIEMPO_DE_COCCION_MAX;
 
@@ -27,6 +27,13 @@ public class Plato {
         this.estadoPlato = platoBase.estadoPlato;
     }
 
+    public EstadoPlato getEstadoPlato() {
+        return this.estadoPlato;
+    }
+
+    public void cambiarEstadoPlato(EstadoPlato estadoPlato){
+        this.estadoPlato = estadoPlato;
+    }
     public int tiempoDeCoccion() {
         return ThreadLocalRandom.current().nextInt(TIEMPO_DE_COCCION_MIN, TIEMPO_DE_COCCION_MAX + 1);
     }

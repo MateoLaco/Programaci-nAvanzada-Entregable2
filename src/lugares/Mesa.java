@@ -23,6 +23,7 @@ public class Mesa{
     private final CyclicBarrier barreraComer;
     private final List<Cliente> clientes;
 
+    /* Constructor de Mesa */
     public Mesa(int idMesa, BlockingQueue<TareaMozo> tareasDeMozos) {
         this.idMesa = idMesa;
         this.estadoMesa = EstadosMesas.LIBRE;
@@ -40,21 +41,23 @@ public class Mesa{
         this.clientes = Collections.synchronizedList(new ArrayList<>(Config.PERSONAS_POR_MESA)); //clientes como lista sincronizada
     }
 
+    /* Getters */
     public int getIdMesa() { return idMesa; }
     public EstadosMesas getEstadoMesa() { return estadoMesa; }
-    public void setEstadoMesa(EstadosMesas estadoMesa) { this.estadoMesa = estadoMesa; } //todos en public asi los mozos lo puede ver
     public List<Cliente> getClientes() { return clientes; }
-
-    public void agregarCliente(Cliente cliente) {
-        this.clientes.add(cliente);
-    }
-
     public List<Plato> obtenerPlatos() {
         List<Plato> platos = new ArrayList<>(Config.PERSONAS_POR_MESA);
         for(Cliente cliente : this.clientes) {
             platos.add(cliente.getPlato());
         }
         return platos;
+    }
+
+    /* Setters */
+    public void setEstadoMesa(EstadosMesas estadoMesa) { this.estadoMesa = estadoMesa; } //todos en public asi los mozos lo puede ver
+
+    public void agregarCliente(Cliente cliente) {
+        this.clientes.add(cliente);
     }
 
     /* Manejo de barreras cíclicas */
@@ -74,10 +77,11 @@ public class Mesa{
     }
 
     public void pedirMozo(){
+
         this.estadoMesa = EstadosMesas.ESPERANDO_MOZO;
 
         try {
-            this.tareasDeMozos.put(new TareaMozo(EstadosTareaMozo.TOMAR_PEDIDO, this));
+            this.tareasDeMozos.put(new TareaMozo(EstadosTareaMozo.TOMAR_PEDIDO, this, null));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
